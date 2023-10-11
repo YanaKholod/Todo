@@ -1,9 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
-  deleteCompanyById,
   updateTodo,
   addTodo,
   switchIsCompleted,
+  deleteTodoById,
+  fetchAllTodos,
 } from "./actions";
 
 const todoSlice = createSlice({
@@ -11,19 +12,30 @@ const todoSlice = createSlice({
   initialState: {
     error: null,
     isLoggedIn: false,
-    dropdownCompanies: [],
+    todosArray: [],
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(deleteCompanyById.pending, (state, action) => {
+      .addCase(fetchAllTodos.pending, (state, action) => {
+        state.isLoggedIn = true;
+      })
+      .addCase(fetchAllTodos.fulfilled, (state, action) => {
+        console.log("action payload", action.payload.todos);
+        state.todosArray = action.payload.todos;
+        state.error = null;
+      })
+      .addCase(fetchAllTodos.rejected, (state, action) => {
+        state.error = action.payload;
+      })
+      .addCase(deleteTodoById.pending, (state, action) => {
         state.isLoggedIn = true;
         state.error = null;
       })
-      .addCase(deleteCompanyById.fulfilled, (state, action) => {
+      .addCase(deleteTodoById.fulfilled, (state, action) => {
         state.error = null;
       })
-      .addCase(deleteCompanyById.rejected, (state, action) => {
+      .addCase(deleteTodoById.rejected, (state, action) => {
         state.error = action.payload;
       })
       .addCase(updateTodo.pending, (state, action) => {
@@ -57,5 +69,7 @@ const todoSlice = createSlice({
       });
   },
 });
+
+export const { updateTodosArray } = todoSlice.actions;
 
 export const todoReducer = todoSlice.reducer;

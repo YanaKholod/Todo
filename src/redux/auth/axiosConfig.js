@@ -1,6 +1,6 @@
 import axios from "axios";
 
-axios.defaults.baseURL = "https://banking-5ah7.onrender.com/api";
+axios.defaults.baseURL = "https://backtodo.onrender.com/api";
 
 export const REGISTER_ENDPOINT = "/auth/register";
 
