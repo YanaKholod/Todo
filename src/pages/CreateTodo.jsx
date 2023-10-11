@@ -1,9 +1,9 @@
 import React from "react";
 import Form from "../components/Form";
 import { useDispatch } from "react-redux";
-import { addTodo, fetchTodos } from "../store/slice";
 import styled from "styled-components";
 import { getCurrentUser } from "../redux/auth/actions";
+import { addTodo } from "../redux/todos/actions";
 
 const Styled = {
   WrapperCreate: styled.div`

@@ -2,8 +2,13 @@ import React from "react";
 import Form from "../components/Form";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { deleteTodo, editTodo, fetchTodos } from "../store/slice";
 import styled from "styled-components";
+import { getCurrentUser } from "../redux/auth/actions";
+import {
+  deleteTodoById,
+  switchIsCompleted,
+  updateTodo,
+} from "../redux/todos/actions";
 
 const Styled = {
   Wrapper: styled.div`
@@ -158,22 +163,21 @@ const TodoItemComponent = ({ todoItem }) => {
 
   const handleDone = async (data, id) => {
     await dispatch(
-      editTodo({
-        data: { ...data, isCompleted: true, completedAt: Date.now() },
-        id,
+      switchIsCompleted({
+        data: { ...data, isCompleted: true },
       })
     );
-    await dispatch(fetchTodos());
+    await dispatch(getCurrentUser());
   };
 
   const handleDelete = async (id) => {
-    await dispatch(deleteTodo(id));
-    await dispatch(fetchTodos());
+    await dispatch(deleteTodoById(id));
+    await dispatch(getCurrentUser());
   };
 
   const handleEdit = async (data, id) => {
     await dispatch(
-      editTodo({
+      updateTodo({
         data: {
           ...data,
           isCompleted: data.isCompleted === "true" ? true : false,
@@ -181,7 +185,7 @@ const TodoItemComponent = ({ todoItem }) => {
         id,
       })
     );
-    await dispatch(fetchTodos());
+    await dispatch(getCurrentUser());
   };
   return (
     <Styled.Wrapper isCompleted={todoItem.isCompleted}>

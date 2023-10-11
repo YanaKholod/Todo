@@ -7,6 +7,8 @@ import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { getCurrentUser } from "./redux/auth/actions";
+import LoginForm from "./form/LoginForm";
+import RegistrationForm from "./form/RegisterForm";
 
 const Styled = {
   App: styled.div`
@@ -35,13 +37,12 @@ function App() {
   const dispatch = useDispatch();
   const { token } = useSelector((state) => state.auth);
   const { user } = useSelector((state) => state.auth);
-  const { isLoggedIn } = useSelector((state) => state.auth);
 
   useEffect(() => {
     if (token) {
       dispatch(getCurrentUser());
     }
-  });
+  }, [token]);
 
   return (
     <BrowserRouter>
@@ -54,6 +55,8 @@ function App() {
             {user && <Route path="/create" element={<CreateTodo />} />}
             <Route path="/main" exact={true} element={<HomePage />} />
             <Route path="/statistics" element={<Statistics />} />
+            <Route path="/login" exact={true} element={<LoginForm />} />
+            <Route path="/register" element={<RegistrationForm />} />
             <Route path="*" element={<Navigate to="/main" />} />
           </Routes>
         </Styled.Content>
@@ -63,3 +66,17 @@ function App() {
 }
 
 export default App;
+
+//   const socket = new WebSocket("ws://localhost:8080");
+// socket.addEventListener("open", (event) => {
+//   console.log("WebSocket connection opened");
+//   socket.send("Hello, WebSocket!");
+// });
+
+// socket.addEventListener("message", (event) => {
+//   console.log(`Received: ${event.data}`);
+// });
+
+// socket.addEventListener("close", (event) => {
+//   console.log("WebSocket connection closed");
+// });

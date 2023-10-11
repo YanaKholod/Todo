@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import TodoItemComponent from "../components/todoItemComponent";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchTodos } from "../store/slice";
 import styled from "styled-components";
+import { fetchAllTodos } from "../redux/todos/actions";
+import { useNavigate } from "react-router-dom";
 
 const Styled = {
   WrapperTodos: styled.div`
@@ -51,59 +52,129 @@ const Styled = {
       color: #663535;
     }
   `,
+  NoItem: styled.div`
+    color: rgb(36, 50, 70);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 25px;
+  `,
 };
 
 const HomePage = () => {
   const [showCompletedItems, setShowCompletedItems] = useState(false);
   const [showActiveItems, setShowActiveItems] = useState(false);
   const [showAllItems, setShowAllItems] = useState(false);
-  const [todosForShow, setTodosForShow] = useState(todosCollection);
-
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
+  const [sortCriteria, setSortCriteria] = useState({
+    sortBy: "companyName",
+    sortOrder: "true",
+  });
+  const [isLoading, setIsLoading] = useState(true);
+  const [sortData, setSortData] = useState("asc");
   const dispatch = useDispatch();
-  const todosCollection = useSelector((state) => state.todos);
+  const navigate = useNavigate();
+  const { todosArray } = useSelector((state) => state.todos);
+  const { user } = useSelector((state) => state.auth);
 
+  console.log("todosArray", todosArray);
   useEffect(() => {
-    dispatch(fetchTodos());
-  }, []);
+    dispatch(fetchAllTodos({ page, perPage, sort: sortCriteria }))
+      .then((response) => {
+        const { currentPage, totalPages } = response.payload;
+        setPage(currentPage);
+        setTotalPages(totalPages);
+        setIsLoading(false);
+        navigate(
+          `?page=1&perPage=${perPage}&sortBy=${sortCriteria.sortBy}&sortOrder=${sortCriteria.sortOrder}`
+        );
+      })
+      .catch((error) => {
+        console.error("Error fetching companies:", error);
+        setIsLoading(false);
+      });
+  }, [dispatch, user, page, perPage, sortCriteria, navigate]);
 
-  useEffect(() => {
-    setTodosForShow(todosCollection);
-  }, [todosCollection]);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
-  useEffect(() => {
-    const activeTodos = todosCollection.filter((item) => !item.isCompleted);
-    setTodosForShow(activeTodos);
-  }, [showActiveItems]);
+  const handleSortAsc = async () => {
+    setSortData("asc");
+    setSortCriteria({ sortBy: "companyName", sortOrder: "asc" });
+  };
 
-  useEffect(() => {
-    const completedTodos = todosCollection.filter((item) => item.isCompleted);
-    setTodosForShow(completedTodos);
-  }, [showCompletedItems]);
+  const handleSortDesc = async () => {
+    setSortData("desc");
+    setSortCriteria({ sortBy: "companyName", sortOrder: "desc" });
+  };
 
-  useEffect(() => {
-    setTodosForShow(todosCollection);
-  }, [showAllItems]);
+  const handlePageChange = async (newPage) => {
+    if (page <= totalPages) {
+      await setPage(newPage);
+      navigate(`?page=${page}&perPage=${perPage}`);
+    }
+  };
+
+  const handlePerPageChange = (newPerPage) => {
+    setPerPage(newPerPage);
+    setPage(1);
+    navigate(`?page=1&perPage=${perPage}`);
+  };
+  // useEffect(() => {
+  //   dispatch(fetchAllTodos());
+  // }, []);
+
+  // console.log("TODOS ARRAY", todosArray);
+  // const press = () => {
+  //   const page = 1;
+  //   const perPage = 10;
+  //   dispatch(fetchAllTodos({ page, perPage }));
+  // };
+  // useEffect(() => {
+  //   setTodosForShow(todosCollection);
+  // }, [todosCollection]);
+
+  // useEffect(() => {
+  //   const activeTodos = todosCollection.filter((item) => !item.isCompleted);
+  //   setTodosForShow(activeTodos);
+  // }, [showActiveItems]);
+
+  // useEffect(() => {
+  //   const completedTodos = todosCollection.filter((item) => item.isCompleted);
+  //   setTodosForShow(completedTodos);
+  // }, [showCompletedItems]);
+
+  // useEffect(() => {
+  //   setTodosForShow(todosCollection);
+  // }, [showAllItems]);
 
   return (
     <Styled.WrapperMain>
       <h1>To do list</h1>
-      <Styled.WrapperTodos>
-        <Styled.WrapperFilterButtons>
-          <Styled.Filters>
-            <div onClick={() => setShowAllItems(!showAllItems)}>All</div>
-            <div onClick={() => setShowActiveItems(!showActiveItems)}>
-              Active
-            </div>
-            <div onClick={() => setShowCompletedItems(!showCompletedItems)}>
-              Completed
-            </div>
-          </Styled.Filters>
-        </Styled.WrapperFilterButtons>
-        {todosForShow &&
-          todosForShow.map((item) => (
-            <TodoItemComponent key={item.id} todoItem={item} />
-          ))}
-      </Styled.WrapperTodos>
+      {user ? (
+        <Styled.WrapperTodos>
+          <Styled.WrapperFilterButtons>
+            <Styled.Filters>
+              <div onClick={() => setShowAllItems(!showAllItems)}>All</div>
+              <div onClick={() => setShowActiveItems(!showActiveItems)}>
+                Active
+              </div>
+              <div onClick={() => setShowCompletedItems(!showCompletedItems)}>
+                Completed
+              </div>
+            </Styled.Filters>
+          </Styled.WrapperFilterButtons>
+          {todosArray &&
+            todosArray.map((item) => (
+              <TodoItemComponent key={item.id} todoItem={item} />
+            ))}
+        </Styled.WrapperTodos>
+      ) : (
+        <Styled.NoItem>No tasks, log into the application.</Styled.NoItem>
+      )}
     </Styled.WrapperMain>
   );
 };

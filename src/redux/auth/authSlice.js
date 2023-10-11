@@ -1,5 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { getCurrentUser, login, logout, registerUser } from "./actions";
+import { updateTodo } from "../todos/actions";
+import { updateTodosArray } from "../todos/todoSlice";
 
 const authSlice = createSlice({
   name: "auth",
@@ -8,7 +10,6 @@ const authSlice = createSlice({
     token: null,
     isLoggedIn: false,
     isRefreshing: false,
-    todosArray: [],
     userForDetails: null,
     error: null,
     isLoading: null,
@@ -50,7 +51,6 @@ const authSlice = createSlice({
       .addCase(getCurrentUser.fulfilled, (state, action) => {
         state.isLoggedIn = true;
         state.user = action.payload;
-        state.todosArray = action.payload.todos;
         state.isRefreshing = false;
         state.isLoading = false;
       })
