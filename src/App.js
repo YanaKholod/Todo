@@ -4,6 +4,9 @@ import HomePage from "./pages/HomePage";
 import CreateTodo from "./pages/CreateTodo";
 import Statistics from "./pages/Statistics";
 import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { getCurrentUser } from "./redux/auth/actions";
 
 const Styled = {
   App: styled.div`
@@ -29,6 +32,17 @@ const Styled = {
   `,
 };
 function App() {
+  const dispatch = useDispatch();
+  const { token } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
+  const { isLoggedIn } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (token) {
+      dispatch(getCurrentUser());
+    }
+  });
+
   return (
     <BrowserRouter>
       <Styled.App>
@@ -37,8 +51,8 @@ function App() {
         </Styled.SideBar>
         <Styled.Content>
           <Routes>
+            {user && <Route path="/create" element={<CreateTodo />} />}
             <Route path="/main" exact={true} element={<HomePage />} />
-            <Route path="/create" element={<CreateTodo />} />
             <Route path="/statistics" element={<Statistics />} />
             <Route path="*" element={<Navigate to="/main" />} />
           </Routes>

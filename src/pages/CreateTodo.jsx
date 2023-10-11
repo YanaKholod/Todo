@@ -3,6 +3,7 @@ import Form from "../components/Form";
 import { useDispatch } from "react-redux";
 import { addTodo, fetchTodos } from "../store/slice";
 import styled from "styled-components";
+import { getCurrentUser } from "../redux/auth/actions";
 
 const Styled = {
   WrapperCreate: styled.div`
@@ -35,12 +36,10 @@ const CreateTodo = () => {
       addTodo({
         ...data,
         isCompleted: data.isCompleted === "true" ? true : false,
-        completedAt: data.isCompleted === "true" ? Date.now() : "",
-        createdAt: Date.now(),
       })
     );
 
-    await dispatch(fetchTodos());
+    await dispatch(getCurrentUser());
   };
 
   return (
