@@ -1,5 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 
 const Styled = {
@@ -84,9 +85,14 @@ export const Form = ({
       isCompleted: initialData ? initialData.isCompleted : false,
     },
   });
+  const { todosArray } = useSelector((state) => state.todos);
 
   const onSubmit = (data) => {
-    onFormSubmit(data, initialData ? initialData.id : "");
+    const formData = {
+      ...data,
+      parentTodo: data.parentTodo.length > 0 ? data.parentTodo : null,
+    };
+    onFormSubmit(formData, initialData ? initialData._id : "");
     setShowModal ? setShowModal(false) : reset();
   };
 
@@ -97,6 +103,17 @@ export const Form = ({
   return (
     <Styled.WrapperForm>
       <Styled.Form onSubmit={handleSubmit(onSubmit)}>
+        <label>
+          <p>Parent Todo:</p>
+          <select {...register("parentTodo")}>
+            <option value="">Select a parent todo</option>
+            {todosArray.map((todo) => (
+              <option key={todo._id} value={todo._id}>
+                {todo.title}
+              </option>
+            ))}
+          </select>
+        </label>
         <label>
           <p>Title:</p>
           <Styled.InputText

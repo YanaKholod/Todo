@@ -55,7 +55,7 @@ export const logout = createAsyncThunk(
 
 export const getCurrentUser = createAsyncThunk(
   "auth/current",
-  async (_, { getState, dispatch, rejectWithValue }) => {
+  async (_, { getState, rejectWithValue }) => {
     const { token } = getState().auth;
     token && tokenHeaders.set(token);
     try {

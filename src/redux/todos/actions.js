@@ -3,20 +3,15 @@ import axios from "axios";
 import {
   ADD_TODO_ENDPOINT,
   DELETE_TODO_ENDPOINT,
-  FETCH_ALL_TODOS,
+  FETCH_ALL,
   UPDATE_TODO_ENDPOINT,
 } from "./axiosConfig";
 
 export const fetchAllTodos = createAsyncThunk(
   "todos/all",
-  async ({ page = 1, perPage = 10, sort } = {}, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const { sortBy, sortOrder } = sort;
-      const response = await axios.get(
-        FETCH_ALL_TODOS(page, perPage, sortBy, sortOrder)
-      );
-
-      console.loog("fffffffff", response.data);
+      const response = await axios.get(FETCH_ALL);
       return response.data;
     } catch (error) {
       return rejectWithValue(
@@ -29,7 +24,7 @@ export const deleteTodoById = createAsyncThunk(
   "todos/delete",
   async (_id, { rejectWithValue }) => {
     try {
-      await axios.delete(DELETE_TODO_ENDPOINT);
+      await axios.delete(DELETE_TODO_ENDPOINT(_id));
       return _id;
     } catch (error) {
       return rejectWithValue(
@@ -42,11 +37,22 @@ export const deleteTodoById = createAsyncThunk(
 export const updateTodo = createAsyncThunk(
   "todos/change",
   async (data, { rejectWithValue }) => {
+    console.log("DATA", data);
     try {
-      const response = await axios.patch(UPDATE_TODO_ENDPOINT(data.id), {
-        ...data,
-      });
-      return response.data;
+      if (data.parentTodo) {
+        const response = await axios.patch(
+          UPDATE_TODO_ENDPOINT(data.parentTodo),
+          {
+            ...data,
+          }
+        );
+        return response.data;
+      } else {
+        const response = await axios.patch(UPDATE_TODO_ENDPOINT(data._id), {
+          ...data,
+        });
+        return response.data;
+      }
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "An error occurred"
@@ -55,7 +61,7 @@ export const updateTodo = createAsyncThunk(
   }
 );
 export const addTodo = createAsyncThunk(
-  "todos/addCompany",
+  "todos/addTodo",
   async (data, { rejectWithValue }) => {
     try {
       const response = await axios.post(ADD_TODO_ENDPOINT, {
@@ -70,11 +76,11 @@ export const addTodo = createAsyncThunk(
   }
 );
 
-export const switchIsCompleted = createAsyncThunk(
-  "todos/switch",
+export const addSubTodo = createAsyncThunk(
+  "todos/addSubTodo",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await axios.patch(UPDATE_TODO_ENDPOINT(data.id), {
+      const response = await axios.post(UPDATE_TODO_ENDPOINT(data.id), {
         ...data,
       });
       return response.data;

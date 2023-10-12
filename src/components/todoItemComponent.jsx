@@ -13,7 +13,8 @@ import {
 const Styled = {
   Wrapper: styled.div`
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: start;
     width: 80%;
     margin: 5px;
     padding: 12px;
@@ -28,6 +29,12 @@ const Styled = {
       justify-content: space-around;
     }
   `,
+  MainLine: styled.div`
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+  `,
   Title: styled.div`
     font-size: 23px;
     cursor: default;
@@ -37,6 +44,9 @@ const Styled = {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    div {
+      font-size: 13px;
+    }
     @media (max-width: 768px) {
       font-size: 17px;
     }
@@ -50,7 +60,7 @@ const Styled = {
     width: 100%;
     justify-content: end;
     position: relative;
-    align-items: center;
+    align-items: end;
     @media (max-width: 768px) {
       font-size: 13px;
     }
@@ -129,111 +139,92 @@ const Styled = {
     backdrop-filter: blur(14px);
     z-index: 9999;
   `,
+  SubTodoItem: styled.div`
+    padding-bottom: 4px;
+  `,
 };
-Styled.InfoButton = styled.div`
-  background-color: #fff9ab;
-  color: #656129;
-  border: 1px solid #656129;
-  border-radius: 20px;
-  text-align: center;
-  height: max-content;
-  padding: 8px 25px;
-  margin: 0 3px;
-  cursor: pointer;
-  @media (max-width: 620px) {
-    margin: 5px 2px;
-    padding: 6px 8px;
-  }
-  &:hover ~ ${Styled.Description} {
-    display: block;
-    position: absolute;
-    border-radius: 10px;
-    padding: 5px;
-    left: 50%;
-    z-index: 20;
-    top: 75%;
-    background-color: #cbcbcb;
-    border: 1px solid #535252;
-  }
-`;
 
 const TodoItemComponent = ({ todoItem }) => {
   const [showModal, setShowModal] = useState(false);
   const dispatch = useDispatch();
 
-  const handleDone = async (data, id) => {
-    await dispatch(
-      switchIsCompleted({
-        data: { ...data, isCompleted: true },
-      })
-    );
+  const handleDone = async (_id) => {
+    await dispatch(updateTodo({ isCompleted: true, _id }));
     await dispatch(getCurrentUser());
   };
 
-  const handleDelete = async (id) => {
-    await dispatch(deleteTodoById(id));
+  const handleDelete = async (_id) => {
+    await dispatch(deleteTodoById(_id));
     await dispatch(getCurrentUser());
   };
 
-  const handleEdit = async (data, id) => {
+  const handleEdit = async (data, _id) => {
     await dispatch(
       updateTodo({
-        data: {
-          ...data,
-          isCompleted: data.isCompleted === "true" ? true : false,
-        },
-        id,
+        ...data,
+        _id,
+        isCompleted: data.isCompleted === "true" ? true : false,
       })
     );
     await dispatch(getCurrentUser());
   };
+
   return (
-    <Styled.Wrapper isCompleted={todoItem.isCompleted}>
-      <Styled.Title>{todoItem.title}</Styled.Title>
-      <Styled.ButtonsWrapper>
-        <Styled.DoneButton
-          isDone={todoItem.isCompleted}
-          onClick={() => {
-            handleDone(todoItem, todoItem.id);
-          }}
-        >
-          Done
-        </Styled.DoneButton>
-        <Styled.DeleteButton
-          onClick={() => {
-            handleDelete(todoItem.id);
-          }}
-        >
-          Delete
-        </Styled.DeleteButton>
-        <Styled.EditButton
-          stopEdit={todoItem.isCompleted}
-          onClick={() => setShowModal(true)}
-        >
-          Edit
-        </Styled.EditButton>
-        {showModal && (
-          <Styled.Modal>
-            <Form
-              setShowModal={setShowModal}
-              initialData={todoItem}
-              buttonName={"Save"}
-              onFormSubmit={handleEdit}
-            />
-          </Styled.Modal>
-        )}
-        <Styled.InfoButton>Info</Styled.InfoButton>
-        <Styled.Description>
-          <div>{todoItem.description}</div>
+    <>
+      <Styled.Wrapper isCompleted={todoItem.isCompleted}>
+        <Styled.MainLine>
+          <Styled.Title>
+            {todoItem.title}
+            <div>{todoItem.description}</div>
+          </Styled.Title>
+          <Styled.ButtonsWrapper>
+            <Styled.DoneButton
+              isDone={todoItem.isCompleted}
+              onClick={() => {
+                handleDone(todoItem._id);
+              }}
+            >
+              Done
+            </Styled.DoneButton>
+            <Styled.DeleteButton
+              onClick={() => {
+                handleDelete(todoItem._id);
+              }}
+            >
+              Delete
+            </Styled.DeleteButton>
+            <Styled.EditButton
+              stopEdit={todoItem.isCompleted}
+              onClick={() => setShowModal(true)}
+            >
+              Edit
+            </Styled.EditButton>
+            {showModal && (
+              <Styled.Modal>
+                <Form
+                  setShowModal={setShowModal}
+                  initialData={todoItem}
+                  buttonName={"Save"}
+                  onFormSubmit={handleEdit}
+                />
+              </Styled.Modal>
+            )}
+          </Styled.ButtonsWrapper>
+        </Styled.MainLine>
+        {todoItem.subTodo.length > 0 && (
           <div>
-            {todoItem.isCompleted
-              ? `Created: ${new Date(todoItem.createdAt).toUTCString()}, 
-              Completed: ${new Date(todoItem.completedAt).toUTCString()} `
-              : `Created: ${new Date(todoItem.createdAt).toUTCString()}`}
+            SubTodo:
+            <div>
+              {todoItem.subTodo.map((item) => (
+                <Styled.SubTodoItem key={item.id}>
+                  {item.title}
+                </Styled.SubTodoItem>
+              ))}
+            </div>
           </div>
-        </Styled.Description>
-      </Styled.ButtonsWrapper>
-    </Styled.Wrapper>
+        )}
+      </Styled.Wrapper>
+    </>
   );
 };
 
