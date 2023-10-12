@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import TodoItemComponent from "../components/todoItemComponent";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
-import { fetchAllTodos } from "../redux/todos/actions";
 import { useNavigate } from "react-router-dom";
+import { fetchAllTodos } from "../redux/todos/actions";
 
 const Styled = {
   WrapperTodos: styled.div`
@@ -59,6 +59,35 @@ const Styled = {
     justify-content: center;
     font-size: 25px;
   `,
+  Pagination: styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    button {
+      font-weight: bold;
+      font-size: 16px;
+      margin: 0 10px;
+      padding: 5px 10px;
+      border-radius: 5px;
+      color: black;
+      border-color: black;
+      cursor: pointer;
+      &:hover {
+      }
+    }
+    span {
+      font-weight: bold;
+    }
+    select {
+      border-radius: 4px;
+      padding: 5px;
+      background-color: transparent;
+      border: 1px solid black;
+      color: black;
+    }
+  `,
 };
 
 const HomePage = () => {
@@ -69,46 +98,34 @@ const HomePage = () => {
   const [perPage, setPerPage] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [sortCriteria, setSortCriteria] = useState({
-    sortBy: "companyName",
-    sortOrder: "true",
+    sortBy: "isCompleted",
+    sortOrder: "false",
   });
-  const [isLoading, setIsLoading] = useState(true);
-  const [sortData, setSortData] = useState("asc");
+  const [isLoading, setIsLoading] = useState(false);
+  const [sortData, setSortData] = useState("isCompletedFalse");
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { todosArray } = useSelector((state) => state.todos);
   const { user } = useSelector((state) => state.auth);
 
-  console.log("todosArray", todosArray);
   useEffect(() => {
-    dispatch(fetchAllTodos({ page, perPage, sort: sortCriteria }))
-      .then((response) => {
-        const { currentPage, totalPages } = response.payload;
-        setPage(currentPage);
-        setTotalPages(totalPages);
-        setIsLoading(false);
-        navigate(
-          `?page=1&perPage=${perPage}&sortBy=${sortCriteria.sortBy}&sortOrder=${sortCriteria.sortOrder}`
-        );
-      })
-      .catch((error) => {
-        console.error("Error fetching companies:", error);
-        setIsLoading(false);
-      });
-  }, [dispatch, user, page, perPage, sortCriteria, navigate]);
+    if (user) {
+      dispatch(fetchAllTodos());
+    }
+  }, [dispatch, user]);
 
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
   const handleSortAsc = async () => {
-    setSortData("asc");
-    setSortCriteria({ sortBy: "companyName", sortOrder: "asc" });
+    setSortData("true");
+    setSortCriteria({ sortBy: "isCompleted", sortOrder: "true" });
   };
 
   const handleSortDesc = async () => {
-    setSortData("desc");
-    setSortCriteria({ sortBy: "companyName", sortOrder: "desc" });
+    setSortData("false");
+    setSortCriteria({ sortBy: "isCompleted", sortOrder: "false" });
   };
 
   const handlePageChange = async (newPage) => {
@@ -123,33 +140,6 @@ const HomePage = () => {
     setPage(1);
     navigate(`?page=1&perPage=${perPage}`);
   };
-  // useEffect(() => {
-  //   dispatch(fetchAllTodos());
-  // }, []);
-
-  // console.log("TODOS ARRAY", todosArray);
-  // const press = () => {
-  //   const page = 1;
-  //   const perPage = 10;
-  //   dispatch(fetchAllTodos({ page, perPage }));
-  // };
-  // useEffect(() => {
-  //   setTodosForShow(todosCollection);
-  // }, [todosCollection]);
-
-  // useEffect(() => {
-  //   const activeTodos = todosCollection.filter((item) => !item.isCompleted);
-  //   setTodosForShow(activeTodos);
-  // }, [showActiveItems]);
-
-  // useEffect(() => {
-  //   const completedTodos = todosCollection.filter((item) => item.isCompleted);
-  //   setTodosForShow(completedTodos);
-  // }, [showCompletedItems]);
-
-  // useEffect(() => {
-  //   setTodosForShow(todosCollection);
-  // }, [showAllItems]);
 
   return (
     <Styled.WrapperMain>
@@ -169,8 +159,31 @@ const HomePage = () => {
           </Styled.WrapperFilterButtons>
           {todosArray &&
             todosArray.map((item) => (
-              <TodoItemComponent key={item.id} todoItem={item} />
+              <TodoItemComponent key={item.title} todoItem={item} />
             ))}
+          <Styled.Pagination>
+            <button
+              onClick={() => handlePageChange(page - 1)}
+              disabled={page === 1}
+            >
+              Previous
+            </button>
+            <span> Page {page} </span>
+            <button
+              onClick={() => handlePageChange(page + 1)}
+              disabled={page === totalPages}
+            >
+              Next
+            </button>
+            <select
+              value={perPage}
+              onChange={(e) => handlePerPageChange(parseInt(e.target.value))}
+            >
+              <option value={10}>10 per page</option>
+              <option value={20}>20 per page</option>
+              <option value={50}>50 per page</option>
+            </select>
+          </Styled.Pagination>
         </Styled.WrapperTodos>
       ) : (
         <Styled.NoItem>No tasks, log into the application.</Styled.NoItem>

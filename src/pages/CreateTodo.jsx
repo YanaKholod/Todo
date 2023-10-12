@@ -3,7 +3,7 @@ import Form from "../components/Form";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import { getCurrentUser } from "../redux/auth/actions";
-import { addTodo } from "../redux/todos/actions";
+import { addTodo, updateTodo } from "../redux/todos/actions";
 
 const Styled = {
   WrapperCreate: styled.div`
@@ -32,13 +32,21 @@ const CreateTodo = () => {
   const dispatch = useDispatch();
 
   const addNewTodo = async (data) => {
-    await dispatch(
-      addTodo({
-        ...data,
-        isCompleted: data.isCompleted === "true" ? true : false,
-      })
-    );
-
+    if (data.parentTodo) {
+      await dispatch(
+        updateTodo({
+          ...data,
+          isCompleted: data.isCompleted === "true" ? true : false,
+        })
+      );
+    } else {
+      await dispatch(
+        addTodo({
+          ...data,
+          isCompleted: data.isCompleted === "true" ? true : false,
+        })
+      );
+    }
     await dispatch(getCurrentUser());
   };
 

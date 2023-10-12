@@ -3,6 +3,8 @@ import { Sidebar } from "../Constants";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import BurgerMenu from "./BurgerMenu";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../redux/auth/actions";
 
 const Styled = {
   AllSidebar: styled.div`
@@ -119,7 +121,9 @@ const Styled = {
 };
 const Menu = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const { user } = useSelector((state) => state.auth);
 
   const openLoginModal = () => {
     navigate("/login");
@@ -128,13 +132,30 @@ const Menu = () => {
   const openRegisterModal = () => {
     navigate("/register");
   };
-
+  const logOut = () => {
+    dispatch(logout());
+  };
   return (
     <Styled.AllSidebar>
-      <Styled.Buttons>
-        <Styled.Login onClick={openLoginModal}>Login</Styled.Login>
-        <Styled.Register onClick={openRegisterModal}>Register</Styled.Register>
-      </Styled.Buttons>
+      {user ? (
+        <div>
+          <div>Hello, {user.fullName}</div>
+          <Styled.Login
+            onClick={() => {
+              logOut();
+            }}
+          >
+            Logout
+          </Styled.Login>
+        </div>
+      ) : (
+        <Styled.Buttons>
+          <Styled.Login onClick={openLoginModal}>Login</Styled.Login>
+          <Styled.Register onClick={openRegisterModal}>
+            Register
+          </Styled.Register>
+        </Styled.Buttons>
+      )}
 
       <Styled.BurgerMenu onClick={() => setIsOpenModal(!isOpenModal)}>
         <Styled.Div></Styled.Div>

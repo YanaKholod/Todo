@@ -21,7 +21,6 @@ const todoSlice = createSlice({
         state.isLoggedIn = true;
       })
       .addCase(fetchAllTodos.fulfilled, (state, action) => {
-        console.log("action payload", action.payload.todos);
         state.todosArray = action.payload.todos;
         state.error = null;
       })
@@ -55,16 +54,6 @@ const todoSlice = createSlice({
         state.error = null;
       })
       .addCase(addTodo.rejected, (state, action) => {
-        state.error = action.payload;
-      })
-      .addCase(switchIsCompleted.pending, (state, action) => {
-        state.isLoggedIn = true;
-        state.error = null;
-      })
-      .addCase(switchIsCompleted.fulfilled, (state, action) => {
-        state.error = null;
-      })
-      .addCase(switchIsCompleted.rejected, (state, action) => {
         state.error = action.payload;
       });
   },
