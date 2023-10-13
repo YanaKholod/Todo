@@ -54,7 +54,7 @@ function App() {
           <Routes>
             {user && <Route path="/create" element={<CreateTodo />} />}
             <Route path="/main" exact={true} element={<HomePage />} />
-            <Route path="/statistics" element={<Statistics />} />
+            {/* <Route path="/statistics" element={<Statistics />} /> */}
             <Route path="/login" exact={true} element={<LoginForm />} />
             <Route path="/register" element={<RegistrationForm />} />
             <Route path="*" element={<Navigate to="/main" />} />

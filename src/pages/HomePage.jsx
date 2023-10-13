@@ -91,25 +91,15 @@ const Styled = {
 };
 
 const HomePage = () => {
-  const [showCompletedItems, setShowCompletedItems] = useState(false);
-  const [showActiveItems, setShowActiveItems] = useState(false);
-  const [showAllItems, setShowAllItems] = useState(false);
-  const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
-  const [totalPages, setTotalPages] = useState(1);
-  const [sortCriteria, setSortCriteria] = useState({
-    sortBy: "isCompleted",
-    sortOrder: "false",
-  });
   const [isLoading, setIsLoading] = useState(false);
-  const [sortData, setSortData] = useState("isCompletedFalse");
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { todosArray } = useSelector((state) => state.todos);
   const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
     if (user) {
+      setIsLoading(true);
+
       dispatch(fetchAllTodos());
     }
   }, [dispatch, user]);
@@ -118,72 +108,15 @@ const HomePage = () => {
     return <div>Loading...</div>;
   }
 
-  const handleSortAsc = async () => {
-    setSortData("true");
-    setSortCriteria({ sortBy: "isCompleted", sortOrder: "true" });
-  };
-
-  const handleSortDesc = async () => {
-    setSortData("false");
-    setSortCriteria({ sortBy: "isCompleted", sortOrder: "false" });
-  };
-
-  const handlePageChange = async (newPage) => {
-    if (page <= totalPages) {
-      await setPage(newPage);
-      navigate(`?page=${page}&perPage=${perPage}`);
-    }
-  };
-
-  const handlePerPageChange = (newPerPage) => {
-    setPerPage(newPerPage);
-    setPage(1);
-    navigate(`?page=1&perPage=${perPage}`);
-  };
-
   return (
     <Styled.WrapperMain>
       <h1>To do list</h1>
       {user ? (
         <Styled.WrapperTodos>
-          <Styled.WrapperFilterButtons>
-            <Styled.Filters>
-              <div onClick={() => setShowAllItems(!showAllItems)}>All</div>
-              <div onClick={() => setShowActiveItems(!showActiveItems)}>
-                Active
-              </div>
-              <div onClick={() => setShowCompletedItems(!showCompletedItems)}>
-                Completed
-              </div>
-            </Styled.Filters>
-          </Styled.WrapperFilterButtons>
           {todosArray &&
             todosArray.map((item) => (
               <TodoItemComponent key={item.title} todoItem={item} />
             ))}
-          <Styled.Pagination>
-            <button
-              onClick={() => handlePageChange(page - 1)}
-              disabled={page === 1}
-            >
-              Previous
-            </button>
-            <span> Page {page} </span>
-            <button
-              onClick={() => handlePageChange(page + 1)}
-              disabled={page === totalPages}
-            >
-              Next
-            </button>
-            <select
-              value={perPage}
-              onChange={(e) => handlePerPageChange(parseInt(e.target.value))}
-            >
-              <option value={10}>10 per page</option>
-              <option value={20}>20 per page</option>
-              <option value={50}>50 per page</option>
-            </select>
-          </Styled.Pagination>
         </Styled.WrapperTodos>
       ) : (
         <Styled.NoItem>No tasks, log into the application.</Styled.NoItem>
