@@ -16,6 +16,11 @@ export const Sidebar = [
     title: "Statistics",
     link: "/statistics",
   },
+  {
+    id: 4,
+    title: "Chat",
+    link: "/chat",
+  },
 ];
 
 export const emailRegexp = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;

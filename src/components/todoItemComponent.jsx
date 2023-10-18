@@ -216,7 +216,7 @@ const TodoItemComponent = ({ todoItem }) => {
             SubTodo:
             <div>
               {todoItem.subTodo.map((item) => (
-                <Styled.SubTodoItem key={item.id}>
+                <Styled.SubTodoItem key={item.title}>
                   {item.title}
                 </Styled.SubTodoItem>
               ))}

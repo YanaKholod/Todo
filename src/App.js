@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { getCurrentUser } from "./redux/auth/actions";
 import LoginForm from "./pages/LoginForm";
 import RegistrationForm from "./pages/RegisterForm";
+import Chat from "./pages/Chat";
 
 const Styled = {
   App: styled.div`
@@ -57,6 +58,8 @@ function App() {
             {/* <Route path="/statistics" element={<Statistics />} /> */}
             <Route path="/login" exact={true} element={<LoginForm />} />
             <Route path="/register" element={<RegistrationForm />} />
+            <Route path="/chat" element={<Chat />} />
+
             <Route path="*" element={<Navigate to="/main" />} />
           </Routes>
         </Styled.Content>
