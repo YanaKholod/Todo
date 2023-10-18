@@ -11,9 +11,8 @@ const Chat = () => {
     setSocket(newSocket);
 
     newSocket.onmessage = (event) => {
-      const message = event.data; // The received message as a Blob
+      const message = event.data; 
 
-      // Convert the Blob to a string
       const reader = new FileReader();
       reader.onload = (e) => {
         const messageString = e.target.result;
