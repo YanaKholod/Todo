@@ -1,13 +1,23 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../redux/auth/actions";
 import { Styled, emailRegexp } from "../Constants";
+import { registerUser } from "../redux/auth/actions";
 import { useNavigate } from "react-router-dom";
 
-const loginInputsData = [
+const registerInputsData = [
   {
     id: 0,
+    inputType: "text",
+    inputName: "fullName",
+    labelName: "Full Name",
+    placeholder: "Enter your full name",
+    validationRules: {
+      required: "Required field!",
+    },
+  },
+  {
+    id: 1,
     inputType: "email",
     inputName: "email",
     labelName: "Email",
@@ -20,7 +30,7 @@ const loginInputsData = [
     },
   },
   {
-    id: 1,
+    id: 2,
     inputType: "password",
     labelName: "Password",
     placeholder: "Enter your password",
@@ -29,15 +39,15 @@ const loginInputsData = [
       required: "Required field!",
       minLength: {
         value: 6,
-        message: "Must be at least 5 characters long",
+        message: "Must be at least 4 characters long",
       },
     },
   },
 ];
-const LoginForm = () => {
-  const navigate = useNavigate();
 
+const RegistrationForm = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -48,29 +58,22 @@ const LoginForm = () => {
   });
 
   const onSubmit = async (data) => {
-    await dispatch(login({ ...data }));
+    await dispatch(registerUser({ ...data }));
     reset();
-    navigate("/main");
+    navigate("/login");
   };
 
   return (
     <Styled.Wrapper>
-      <p>Login</p>
+      <p>Registration</p>
       <Styled.Form onSubmit={handleSubmit(onSubmit)}>
-        {loginInputsData.map((item) => (
+        {registerInputsData.map((item) => (
           <Styled.Field key={item.id}>
             <Styled.Label>{item.labelName}</Styled.Label>
             <Styled.Input
               type={item.inputType}
               {...register(item.inputName, item.validationRules)}
               placeholder={item.placeholder}
-              //   {...(item.inputType === "phone" && {
-              //     onInput: (e) => {
-              //       if (e.target.value.length > 10) {
-              //         e.target.value = e.target.value.slice(0, 10);
-              //       }
-              //     },
-              //   })}
             />
             <Styled.Errors>
               {errors[item.inputName] && (
@@ -81,11 +84,11 @@ const LoginForm = () => {
         ))}
         <Styled.ButtonLine>
           <Styled.Button type="submit" disabled={!isValid}>
-            Login
+            Register
           </Styled.Button>
           <Styled.Button
             onClick={() => {
-              navigate("/register");
+              navigate("/login");
             }}
           >
             Cancel
@@ -96,4 +99,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default RegistrationForm;

@@ -99,10 +99,10 @@ const HomePage = () => {
   useEffect(() => {
     if (user) {
       setIsLoading(true);
-
       dispatch(fetchAllTodos());
+      setIsLoading(false);
     }
-  }, [dispatch, user]);
+  }, [user]);
 
   if (isLoading) {
     return <div>Loading...</div>;
