@@ -7,8 +7,8 @@ import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { getCurrentUser } from "./redux/auth/actions";
-import LoginForm from "./form/LoginForm";
-import RegistrationForm from "./form/RegisterForm";
+import LoginForm from "./pages/LoginForm";
+import RegistrationForm from "./pages/RegisterForm";
 
 const Styled = {
   App: styled.div`
@@ -66,17 +66,3 @@ function App() {
 }
 
 export default App;
-
-//   const socket = new WebSocket("ws://localhost:8080");
-// socket.addEventListener("open", (event) => {
-//   console.log("WebSocket connection opened");
-//   socket.send("Hello, WebSocket!");
-// });
-
-// socket.addEventListener("message", (event) => {
-//   console.log(`Received: ${event.data}`);
-// });
-
-// socket.addEventListener("close", (event) => {
-//   console.log("WebSocket connection closed");
-// });

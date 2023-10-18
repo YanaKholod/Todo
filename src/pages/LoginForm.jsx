@@ -1,23 +1,13 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
+import { login } from "../redux/auth/actions";
 import { Styled, emailRegexp } from "../Constants";
-import { registerUser } from "../redux/auth/actions";
 import { useNavigate } from "react-router-dom";
 
-const registerInputsData = [
+const loginInputsData = [
   {
     id: 0,
-    inputType: "text",
-    inputName: "fullName",
-    labelName: "Full Name",
-    placeholder: "Enter your full name",
-    validationRules: {
-      required: "Required field!",
-    },
-  },
-  {
-    id: 1,
     inputType: "email",
     inputName: "email",
     labelName: "Email",
@@ -30,7 +20,7 @@ const registerInputsData = [
     },
   },
   {
-    id: 2,
+    id: 1,
     inputType: "password",
     labelName: "Password",
     placeholder: "Enter your password",
@@ -39,15 +29,15 @@ const registerInputsData = [
       required: "Required field!",
       minLength: {
         value: 6,
-        message: "Must be at least 4 characters long",
+        message: "Must be at least 5 characters long",
       },
     },
   },
 ];
-
-const RegistrationForm = () => {
-  const dispatch = useDispatch();
+const LoginForm = () => {
   const navigate = useNavigate();
+
+  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
@@ -58,29 +48,22 @@ const RegistrationForm = () => {
   });
 
   const onSubmit = async (data) => {
-    await dispatch(registerUser({ ...data }));
+    await dispatch(login({ ...data }));
     reset();
-    navigate("/login");
+    navigate("/main");
   };
 
   return (
     <Styled.Wrapper>
-      <p>Registration</p>
+      <p>Login</p>
       <Styled.Form onSubmit={handleSubmit(onSubmit)}>
-        {registerInputsData.map((item) => (
+        {loginInputsData.map((item) => (
           <Styled.Field key={item.id}>
             <Styled.Label>{item.labelName}</Styled.Label>
             <Styled.Input
               type={item.inputType}
               {...register(item.inputName, item.validationRules)}
               placeholder={item.placeholder}
-              //   {...(item.inputType === "email" && {
-              //     onInput: (e) => {
-              //       if (e.target.value.length > 50) {
-              //         e.target.value = e.target.value.slice(0, 20);
-              //       }
-              //     },
-              //   })}
             />
             <Styled.Errors>
               {errors[item.inputName] && (
@@ -91,11 +74,11 @@ const RegistrationForm = () => {
         ))}
         <Styled.ButtonLine>
           <Styled.Button type="submit" disabled={!isValid}>
-            Register
+            Login
           </Styled.Button>
           <Styled.Button
             onClick={() => {
-              navigate("/login");
+              navigate("/register");
             }}
           >
             Cancel
@@ -106,4 +89,4 @@ const RegistrationForm = () => {
   );
 };
 
-export default RegistrationForm;
+export default LoginForm;
