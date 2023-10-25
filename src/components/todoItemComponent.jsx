@@ -4,11 +4,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import { getCurrentUser } from "../redux/auth/actions";
-import {
-  deleteTodoById,
-  switchIsCompleted,
-  updateTodo,
-} from "../redux/todos/actions";
+import { deleteTodoById, updateTodo } from "../redux/todos/actions";
 
 const Styled = {
   Wrapper: styled.div`
@@ -163,7 +159,6 @@ const TodoItemComponent = ({ todoItem }) => {
       updateTodo({
         ...data,
         _id,
-        isCompleted: data.isCompleted === "true" ? true : false,
       })
     );
     await dispatch(getCurrentUser());

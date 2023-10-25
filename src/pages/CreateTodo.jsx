@@ -36,14 +36,12 @@ const CreateTodo = () => {
       await dispatch(
         updateTodo({
           ...data,
-          isCompleted: data.isCompleted === "true" ? true : false,
         })
       );
     } else {
       await dispatch(
         addTodo({
           ...data,
-          isCompleted: data.isCompleted === "true" ? true : false,
         })
       );
     }
