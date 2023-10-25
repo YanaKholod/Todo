@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Styled, emailRegexp } from "../Constants";
 import { registerUser } from "../redux/auth/actions";
 import { useNavigate } from "react-router-dom";
