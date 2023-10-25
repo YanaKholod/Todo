@@ -3,7 +3,7 @@ import TodoItemComponent from "../components/todoItemComponent";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import { fetchAllTodos } from "../redux/todos/actions";
-
+import { ColorRing } from "react-loader-spinner";
 const Styled = {
   WrapperMain: styled.div`
     display: flex;
@@ -39,6 +39,11 @@ const Styled = {
     padding: 8px 14px;
     margin: 0 3px;
     cursor: pointer;
+  `,
+  Spinner: styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
   `,
 };
 
@@ -78,7 +83,17 @@ const HomePage = () => {
             })}
         </Styled.WrapperTodos>
       ) : (
-        <Styled.NoItem>No tasks, log into the application.</Styled.NoItem>
+        <Styled.Spinner>
+          <ColorRing
+            visible={true}
+            height="120"
+            width="120"
+            ariaLabel="blocks-loading"
+            wrapperStyle={{}}
+            wrapperClass="blocks-wrapper"
+            colors={["#cbcbcb", " #f9cedf", " #84d593", " #509fff"]}
+          />
+        </Styled.Spinner>
       )}
     </Styled.WrapperMain>
   );
