@@ -1,7 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { getCurrentUser, login, logout, registerUser } from "./actions";
-import { updateTodo } from "../todos/actions";
-import { updateTodosArray } from "../todos/todoSlice";
 
 const authSlice = createSlice({
   name: "auth",

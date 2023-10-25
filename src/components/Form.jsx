@@ -65,6 +65,15 @@ const Styled = {
       color: #0c371e;
     }
   `,
+  StepInput: styled.input`
+    background-color: #ffffff;
+    border-color: #5f7ca9;
+    box-sizing: border-box;
+    border-radius: 8px;
+    width: 50%;
+    padding: 3px 6px;
+    font-size: 16px;
+  `,
 };
 export const Form = ({
   setShowModal = null,
@@ -174,7 +183,7 @@ export const Form = ({
           </label>
           {fields.map((step, index) => (
             <div key={step.id}>
-              <input
+              <Styled.StepInput
                 {...register(`steps[${index}].title`)}
                 defaultValue={step.description}
               />
