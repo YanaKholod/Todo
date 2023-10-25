@@ -37,7 +37,6 @@ export const deleteTodoById = createAsyncThunk(
 export const updateTodo = createAsyncThunk(
   "todos/change",
   async (data, { rejectWithValue }) => {
-    console.log("DATA", data);
     try {
       if (data.parentTodo) {
         const response = await axios.patch(

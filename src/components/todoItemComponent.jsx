@@ -42,6 +42,7 @@ const Styled = {
     text-overflow: ellipsis;
     div {
       font-size: 13px;
+      padding-left: 10px;
     }
     @media (max-width: 768px) {
       font-size: 17px;
@@ -75,6 +76,22 @@ const Styled = {
     margin: 0 3px;
     cursor: pointer;
     ${({ isDone }) => (isDone ? "display: none;" : "")}
+    @media (max-width: 620px) {
+      margin: 5px 2px;
+      padding: 6px 8px;
+    }
+  `,
+  ArchiveButton: styled.div`
+    background-color: #509fff;
+    color: #00377a;
+    border: 1px solid #1f1657;
+    height: max-content;
+    border-radius: 20px;
+    text-align: center;
+    padding: 8px 14px;
+    margin: 0 3px;
+    cursor: pointer;
+    ${({ isArchived }) => (isArchived ? "display: none;" : "")}
     @media (max-width: 620px) {
       margin: 5px 2px;
       padding: 6px 8px;
@@ -137,6 +154,11 @@ const Styled = {
   `,
   SubTodoItem: styled.div`
     padding-bottom: 4px;
+    padding-left: 10px;
+  `,
+  BoldLabels: styled.div`
+    font-weight: 600;
+    font-size: 16px;
   `,
 };
 
@@ -164,13 +186,18 @@ const TodoItemComponent = ({ todoItem }) => {
     await dispatch(getCurrentUser());
   };
 
+  const handleArchive = async (_id) => {
+    await dispatch(updateTodo({ isArchived: true, _id }));
+    await dispatch(getCurrentUser());
+  };
+
   return (
     <>
       <Styled.Wrapper isCompleted={todoItem.isCompleted}>
         <Styled.MainLine>
           <Styled.Title>
             {todoItem.title}
-            <div>{todoItem.description}</div>
+            <div> {todoItem.description}</div>
           </Styled.Title>
           <Styled.ButtonsWrapper>
             <Styled.DoneButton
@@ -194,6 +221,12 @@ const TodoItemComponent = ({ todoItem }) => {
             >
               Edit
             </Styled.EditButton>
+            <Styled.ArchiveButton
+              isArchived={todoItem.isArchived}
+              onClick={() => handleArchive(todoItem._id)}
+            >
+              Archive
+            </Styled.ArchiveButton>
             {showModal && (
               <Styled.Modal>
                 <Form
@@ -208,11 +241,23 @@ const TodoItemComponent = ({ todoItem }) => {
         </Styled.MainLine>
         {todoItem.subTodo.length > 0 && (
           <div>
-            SubTodo:
+            <Styled.BoldLabels>SubTodo:</Styled.BoldLabels>
             <div>
-              {todoItem.subTodo.map((item) => (
+              {todoItem.subTodo.map((item, index) => (
                 <Styled.SubTodoItem key={item.title}>
-                  {item.title}
+                  {index + 1}. {item.title}
+                </Styled.SubTodoItem>
+              ))}
+            </div>
+          </div>
+        )}
+        {todoItem.steps.length > 0 && (
+          <div>
+            <Styled.BoldLabels>Steps:</Styled.BoldLabels>
+            <div>
+              {todoItem.steps.map((step, index) => (
+                <Styled.SubTodoItem key={step.title}>
+                  {index + 1}. {step.title}
                 </Styled.SubTodoItem>
               ))}
             </div>
