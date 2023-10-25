@@ -1,5 +1,5 @@
 import React from "react";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 
@@ -77,12 +77,14 @@ export const Form = ({
     handleSubmit,
     formState: { errors },
     reset,
+    control,
   } = useForm({
     mode: "onBlur",
     defaultValues: {
       title: initialData ? initialData.title : undefined,
       description: initialData ? initialData.description : undefined,
       isCompleted: initialData ? initialData.isCompleted : false,
+      steps: initialData ? initialData.steps : [],
     },
   });
   const { todosArray } = useSelector((state) => state.todos);
@@ -91,7 +93,7 @@ export const Form = ({
     const formData = {
       ...data,
       parentTodo: data.parentTodo.length > 0 ? data.parentTodo : null,
-      isCompleted: Boolean(data.isCompleted),
+      isCompleted: data.isCompleted === "true",
     };
     onFormSubmit(formData, initialData ? initialData._id : "");
     setShowModal ? setShowModal(false) : reset();
@@ -101,6 +103,10 @@ export const Form = ({
     setShowModal ? setShowModal(false) : reset();
   };
 
+  const { fields, append, remove } = useFieldArray({
+    control, // управляем массивом внутри формы хуком формы, удаляеем или добавляем степы на месте
+    name: "steps",
+  });
   return (
     <Styled.WrapperForm>
       <Styled.Form onSubmit={handleSubmit(onSubmit)}>
@@ -162,6 +168,26 @@ export const Form = ({
             {...register("isCompleted", { required: true })}
           ></input>
         </Styled.RadioButtons>
+        <div>
+          <label>
+            <p>Steps:</p>
+          </label>
+          {fields.map((step, index) => (
+            <div key={step.id}>
+              <input
+                {...register(`steps[${index}].title`)}
+                defaultValue={step.description}
+              />
+              <button type="button" onClick={() => remove(index)}>
+                Remove Step
+              </button>
+            </div>
+          ))}
+          <button type="button" onClick={() => append({ description: "" })}>
+            Add Step
+          </button>
+        </div>
+
         <Styled.WrapperButtons>
           <Styled.DefaultButton type="reset" onClick={() => onCancelClick()}>
             Cancel
