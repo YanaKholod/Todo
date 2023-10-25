@@ -62,38 +62,43 @@ const HomePage = () => {
   }, [user]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <Styled.Spinner>
+        <ColorRing
+          visible={true}
+          height="120"
+          width="120"
+          ariaLabel="blocks-loading"
+          wrapperStyle={{}}
+          wrapperClass="blocks-wrapper"
+          colors={["#cbcbcb", " #f9cedf", " #84d593", " #509fff"]}
+        />
+      </Styled.Spinner>
+    );
   }
 
   return (
     <Styled.WrapperMain>
       <h1>To do list</h1>
-      <Styled.ToggleButton onClick={() => setShowArchived(!showArchived)}>
-        {showArchived ? "Show active" : "Show archived"}
-      </Styled.ToggleButton>
 
       {user ? (
-        <Styled.WrapperTodos>
-          {todosArray &&
-            todosArray.map((item) => {
-              if (showArchived ? item.isArchived : !item.isArchived) {
-                return <TodoItemComponent key={item.title} todoItem={item} />;
-              }
-              return null;
-            })}
-        </Styled.WrapperTodos>
+        <>
+          <Styled.ToggleButton onClick={() => setShowArchived(!showArchived)}>
+            {showArchived ? "Show active" : "Show archived"}
+          </Styled.ToggleButton>
+
+          <Styled.WrapperTodos>
+            {todosArray &&
+              todosArray.map((item) => {
+                if (showArchived ? item.isArchived : !item.isArchived) {
+                  return <TodoItemComponent key={item.title} todoItem={item} />;
+                }
+                return null;
+              })}
+          </Styled.WrapperTodos>
+        </>
       ) : (
-        <Styled.Spinner>
-          <ColorRing
-            visible={true}
-            height="120"
-            width="120"
-            ariaLabel="blocks-loading"
-            wrapperStyle={{}}
-            wrapperClass="blocks-wrapper"
-            colors={["#cbcbcb", " #f9cedf", " #84d593", " #509fff"]}
-          />
-        </Styled.Spinner>
+        <Styled.NoItem>No items, try to log in.</Styled.NoItem>
       )}
     </Styled.WrapperMain>
   );
