@@ -11,7 +11,9 @@ const Chat = () => {
     setSocket(newSocket);
 
     newSocket.onmessage = (event) => {
-      const message = event.data; 
+
+      const message = event.data;
+
 
       const reader = new FileReader();
       reader.onload = (e) => {

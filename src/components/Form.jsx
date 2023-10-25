@@ -91,6 +91,7 @@ export const Form = ({
     const formData = {
       ...data,
       parentTodo: data.parentTodo.length > 0 ? data.parentTodo : null,
+      isCompleted: Boolean(data.isCompleted),
     };
     onFormSubmit(formData, initialData ? initialData._id : "");
     setShowModal ? setShowModal(false) : reset();
