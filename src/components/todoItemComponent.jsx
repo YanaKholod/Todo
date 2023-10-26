@@ -239,18 +239,6 @@ const TodoItemComponent = ({ todoItem }) => {
             )}
           </Styled.ButtonsWrapper>
         </Styled.MainLine>
-        {todoItem.subTodo.length > 0 && (
-          <div>
-            <Styled.BoldLabels>SubTodo:</Styled.BoldLabels>
-            <div>
-              {todoItem.subTodo.map((item, index) => (
-                <Styled.SubTodoItem key={item.title}>
-                  {index + 1}. {item.title}
-                </Styled.SubTodoItem>
-              ))}
-            </div>
-          </div>
-        )}
         {todoItem.steps.length > 0 && (
           <div>
             <Styled.BoldLabels>Steps:</Styled.BoldLabels>
@@ -258,6 +246,18 @@ const TodoItemComponent = ({ todoItem }) => {
               {todoItem.steps.map((step, index) => (
                 <Styled.SubTodoItem key={step.title}>
                   {index + 1}. {step.title}
+                </Styled.SubTodoItem>
+              ))}
+            </div>
+          </div>
+        )}
+        {todoItem.subTodo.length > 0 && (
+          <div>
+            <Styled.BoldLabels>SubTodo:</Styled.BoldLabels>
+            <div>
+              {todoItem.subTodo.map((item, index) => (
+                <Styled.SubTodoItem key={item.title}>
+                  {item.title}
                 </Styled.SubTodoItem>
               ))}
             </div>

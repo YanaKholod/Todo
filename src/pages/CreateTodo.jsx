@@ -10,6 +10,7 @@ const Styled = {
     display: flex;
     flex-direction: column;
     width: 100%;
+    padding-bottom: 50px;
     h1 {
       text-align: center;
       color: rgb(36, 50, 70);
