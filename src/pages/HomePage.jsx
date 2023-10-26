@@ -93,7 +93,6 @@ const HomePage = () => {
                 if (showArchived ? item.isArchived : !item.isArchived) {
                   return <TodoItemComponent key={item.title} todoItem={item} />;
                 }
-                return null;
               })}
           </Styled.WrapperTodos>
         </>

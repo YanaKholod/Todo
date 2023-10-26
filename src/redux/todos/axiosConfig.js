@@ -1,6 +1,6 @@
 import axios from "axios";
 
-axios.defaults.baseURL = "https://backtodo.onrender.com/api";
+axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
 
 export const DELETE_TODO_ENDPOINT = (_id) => `/todos/delete/${_id}`;
 

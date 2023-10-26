@@ -11,6 +11,7 @@ const Styled = {
     width: 400px;
     font-size: 20px;
     p {
+      margin: 4px 0;
       color: rgb(36, 50, 70);
     }
     @media (max-width: 620px) {
@@ -48,10 +49,10 @@ const Styled = {
     box-sizing: border-box;
     border-color: #5f7ca9;
     width: 100%;
-    height: 200px;
+    height: 150px;
     border-radius: 8px;
     padding: 6px 10px;
-    font-size: 17px;
+    font-size: 15px;
   `,
   DefaultButton: styled.button`
     color: #374a66;
@@ -61,7 +62,7 @@ const Styled = {
     background-color: #80a6deb3;
     margin: 0 10px;
     &:hover {
-      background-color: #156837a1;
+      background-color: rgba(46, 76, 121, 0.676);
       color: #0c371e;
     }
   `,
@@ -71,8 +72,28 @@ const Styled = {
     box-sizing: border-box;
     border-radius: 8px;
     width: 50%;
-    padding: 3px 6px;
-    font-size: 16px;
+    padding: 3px;
+    font-size: 12px;
+    margin-right: 5px;
+  `,
+  StepButton: styled.button`
+    color: rgb(55, 74, 102);
+    font-size: 12px;
+    padding: 2px;
+    border-radius: 8px;
+    border-color: rgb(36, 50, 70);
+    background-color: rgba(128, 166, 222, 0.7);
+    :hover {
+      background-color: rgba(46, 76, 121, 0.676);
+    }
+  `,
+  StepWrapper: styled.div`
+    height: auto;
+    max-height: 100px;
+    overflow: scroll;
+    p {
+      margin: 0;
+    }
   `,
 };
 export const Form = ({
@@ -177,7 +198,7 @@ export const Form = ({
             {...register("isCompleted", { required: true })}
           ></input>
         </Styled.RadioButtons>
-        <div>
+        <Styled.StepWrapper>
           <label>
             <p>Steps:</p>
           </label>
@@ -187,15 +208,18 @@ export const Form = ({
                 {...register(`steps[${index}].title`)}
                 defaultValue={step.description}
               />
-              <button type="button" onClick={() => remove(index)}>
+              <Styled.StepButton type="button" onClick={() => remove(index)}>
                 Remove Step
-              </button>
+              </Styled.StepButton>
             </div>
           ))}
-          <button type="button" onClick={() => append({ description: "" })}>
+          <Styled.StepButton
+            type="button"
+            onClick={() => append({ title: "" })}
+          >
             Add Step
-          </button>
-        </div>
+          </Styled.StepButton>
+        </Styled.StepWrapper>
 
         <Styled.WrapperButtons>
           <Styled.DefaultButton type="reset" onClick={() => onCancelClick()}>
